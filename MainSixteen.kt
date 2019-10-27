@@ -48,7 +48,7 @@ class MainSixteen : AppCompatActivity() {
     }
 
     fun arrangeGame() {
-        //function creates an array of image buttons
+        //function creates a list of image buttons and sets the game to its initial state
 
         btnarr.add(findViewById(R.id.imageButton1))
         btnarr.add(findViewById(R.id.imageButton2))
@@ -93,10 +93,13 @@ class MainSixteen : AppCompatActivity() {
     }
 
     fun Picked(view: View) {
+        //this function operates everytime the user picks a card, function flips the card to show image
+        //if this is the second pick of the user, the function checks if the user picked 2 matched cards
 
         view.isEnabled=false
         view.isClickable=false
         if(turn==1) {
+            //this is the first card pick of the user
             opencard1=findViewById(view.id)
             setImage(opencard1)
             for(b in btnarr){
@@ -109,17 +112,19 @@ class MainSixteen : AppCompatActivity() {
             turn++
         }
         else {
+            //this is the second cards pick of the user
             opencard2=findViewById(view.id)
             setImage(opencard2)
             setClickable(false)
             if(opencard1?.getTag()==opencard2?.getTag()) {
+                //checking if the first and second picks of the user match, if they do it counts as 1 point
                 toastMe("Good Job")
                 count++
                 btnarr.remove(opencard1)
                 btnarr.remove(opencard2!!)
                 opencard1=null
                 opencard2=null
-                if(count==8) finishGame()
+                if(count==8) finishGame() //when getting to 8 points it means the user picked every pair of cards correctly, the end phase function is invoked
                 setClickable(true)
             }
             else {
@@ -131,6 +136,7 @@ class MainSixteen : AppCompatActivity() {
     }
 
     fun timer(millisInFuture: Long, countDownInterval: Long): CountDownTimer {
+        //this function counts to time given to present the image for the user to memorize it if he picked 2 different cards
         return object : CountDownTimer(millisInFuture, countDownInterval) {
 
             override fun onTick(millisUntilFinished: Long) {
@@ -153,6 +159,7 @@ class MainSixteen : AppCompatActivity() {
     }
 
     fun setClickable(bool: Boolean){
+        //function sets clickable attribute of the buttons in btnarr button list as the given boolean statement
         for (b in btnarr){
             b.isClickable=bool
             b.isEnabled=bool
@@ -160,6 +167,7 @@ class MainSixteen : AppCompatActivity() {
     }
 
     fun setImage(btn: ImageButton?) {
+        //function sets image for every image button given according to its tag
         when (btn?.getTag().toString()) { //checking the tag and matching the image
             "1" -> btn?.setImageResource(R.drawable.lion)
             "2" -> btn?.setImageResource(R.drawable.pig)
@@ -175,13 +183,15 @@ class MainSixteen : AppCompatActivity() {
 
 
     fun toastMe(msg: String = "What?") {
+        //function creates a toast message of the given string
         val myToast = Toast.makeText(this, msg, Toast.LENGTH_SHORT)
         myToast.show()
     }
 
 
     fun finishGame() {
-        //function creates menu for user and execute user decision (new game or return to main menu)
+        //this function is invoked when the user matched every pair of cards - used to make the game end phase
+        //it creates a menu for user and execute user decision (new game or return to main menu)
 
         if(interstitialAd.isLoaded){
             interstitialAd.show()
